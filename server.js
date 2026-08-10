@@ -14,6 +14,8 @@ const app = express();
 
 const allowedOrigins = [
   'http://localhost:5173',
+  'http://localhost:5000',
+  'https://bqt-f.vercel.app',
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
@@ -21,12 +23,14 @@ app.use(cors({
   origin: (origin, cb) => {
     if (!origin) return cb(null, true);
     if (allowedOrigins.includes(origin)) return cb(null, true);
-    // allow any vercel.app preview deployments
     if (origin.endsWith('.vercel.app')) return cb(null, true);
     cb(new Error('Not allowed by CORS'));
   },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 }));
+app.options('*', cors());
 app.use(express.json({ limit: '10mb' }));
 
 app.use('/api/invoices', invoiceRoutes);
