@@ -32,6 +32,7 @@ const proformaInvoiceSchema = new mongoose.Schema({
 
   // Tax
   gstPercent: { type: Number, default: 18 },
+  includeGst: { type: Boolean, default: true },
 
   // Totals
   roundedTotal: { type: String, default: '' },
