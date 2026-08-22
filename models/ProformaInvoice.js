@@ -5,6 +5,8 @@ const itemSchema = new mongoose.Schema({
   qty: { type: Number, default: 1 },
   unitPrice: { type: Number, default: 0 },
   finalPrice: { type: String, default: '' },
+  discount: { type: Number, default: 0 },
+  discountType: { type: String, default: 'flat' },
   priceSource: { type: String, default: 'unit' },
 }, { _id: false });
 
