@@ -5,8 +5,6 @@ const itemSchema = new mongoose.Schema({
   qty: { type: Number, default: 1 },
   unitPrice: { type: Number, default: 0 },
   finalPrice: { type: String, default: '' },
-  discount: { type: Number, default: 0 },
-  discountType: { type: String, default: 'flat' },
   priceSource: { type: String, default: 'unit' },
 }, { _id: false });
 
@@ -35,6 +33,8 @@ const proformaInvoiceSchema = new mongoose.Schema({
   // Tax
   gstPercent: { type: Number, default: 18 },
   includeGst: { type: Boolean, default: true },
+  discount: { type: Number, default: 0 },
+  discountType: { type: String, default: 'flat' },
 
   // Totals
   roundedTotal: { type: String, default: '' },
