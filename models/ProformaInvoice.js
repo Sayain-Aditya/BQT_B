@@ -6,6 +6,8 @@ const itemSchema = new mongoose.Schema({
   unitPrice: { type: Number, default: 0 },
   finalPrice: { type: String, default: '' },
   priceSource: { type: String, default: 'unit' },
+  discount: { type: Number, default: 0 },
+  discountType: { type: String, default: 'flat' },
 }, { _id: false });
 
 const proformaInvoiceSchema = new mongoose.Schema({
@@ -26,6 +28,8 @@ const proformaInvoiceSchema = new mongoose.Schema({
   },
   shipTo: { type: String, default: '' },
   hpn: { type: String, default: '' },
+  salesPerson: { type: String, default: '' },
+  salesContact: { type: String, default: '' },
 
   // Products
   items: { type: [itemSchema], default: [] },
@@ -33,8 +37,6 @@ const proformaInvoiceSchema = new mongoose.Schema({
   // Tax
   gstPercent: { type: Number, default: 18 },
   includeGst: { type: Boolean, default: true },
-  discount: { type: Number, default: 0 },
-  discountType: { type: String, default: 'flat' },
 
   // Totals
   roundedTotal: { type: String, default: '' },
