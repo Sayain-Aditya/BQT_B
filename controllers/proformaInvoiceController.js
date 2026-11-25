@@ -37,8 +37,19 @@ const createProforma = async (req, res, next) => {
 
 const listProformas = async (req, res, next) => {
   try {
-    const proformas = await ProformaInvoice.find().sort({ createdAt: -1 });
-    res.json(proformas);
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.max(1, parseInt(req.query.limit) || 10);
+    const q = (req.query.search || '').trim();
+    const filter = { deletedAt: null };
+    if (q) filter.$or = [
+      { refNo: { $regex: q, $options: 'i' } },
+      { 'to.name': { $regex: q, $options: 'i' } },
+    ];
+    const [proformas, total] = await Promise.all([
+      ProformaInvoice.find(filter).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit),
+      ProformaInvoice.countDocuments(filter),
+    ]);
+    res.json({ proformas, total, page, pages: Math.ceil(total / limit) });
   } catch (error) {
     next(error);
   }
@@ -69,9 +80,27 @@ const updateProforma = async (req, res, next) => {
 
 const deleteProforma = async (req, res, next) => {
   try {
-    const proforma = await ProformaInvoice.findByIdAndDelete(req.params.id);
+    const proforma = await ProformaInvoice.findByIdAndUpdate(
+      req.params.id,
+      { deletedAt: new Date() },
+      { new: true }
+    );
     if (!proforma) return res.status(404).json({ message: 'Proforma invoice not found' });
     res.json({ message: 'Proforma invoice deleted' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const restoreProforma = async (req, res, next) => {
+  try {
+    const proforma = await ProformaInvoice.findByIdAndUpdate(
+      req.params.id,
+      { deletedAt: null },
+      { new: true }
+    );
+    if (!proforma) return res.status(404).json({ message: 'Proforma invoice not found' });
+    res.json(proforma);
   } catch (error) {
     next(error);
   }
@@ -92,5 +121,6 @@ module.exports = {
   getProforma,
   updateProforma,
   deleteProforma,
+  restoreProforma,
   getNextQuotationNumber,
 };

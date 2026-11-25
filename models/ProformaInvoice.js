@@ -30,6 +30,7 @@ const proformaInvoiceSchema = new mongoose.Schema({
   hpn: { type: String, default: '' },
   salesPerson: { type: String, default: '' },
   salesContact: { type: String, default: '' },
+  deletedAt: { type: Date, default: null },
 
   // Products
   items: { type: [itemSchema], default: [] },
